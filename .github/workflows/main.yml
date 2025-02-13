@@ -3,14 +3,14 @@ name: Terraform EC2 Destroy
 on:
   push:
     branches:
-      - main  # Trigger workflow on push to the 'main' branch
+      - main
 
 permissions:
-  contents: read
+  contents: read  # Ensure the action has permission to access your repository
 
 jobs:
   destroy:
-    name: Destroy EC2 with Terraform
+    name: Destroy EC2 Instance with Terraform
     runs-on: ubuntu-latest
 
     steps:
@@ -20,24 +20,31 @@ jobs:
       - name: Set up Terraform
         uses: hashicorp/setup-terraform@v3
         with:
-          terraform_version: 1.7.5  # Use the latest version of Terraform
+          terraform_version: 1.7.5  # Use the latest stable version of Terraform
 
       - name: Configure AWS credentials
         uses: aws-actions/configure-aws-credentials@v3
         with:
           aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
           aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
-          aws-region: us-east-1  # AWS region (change if needed)
+          aws-region: us-east-1  # Update this to your AWS region
 
       - name: Terraform Init
         run: terraform init
-        working-directory: ./  # Path to your Terraform configuration (adjust if needed)
+        working-directory: ./  # Path to your Terraform configuration
 
       - name: Terraform Validate
         run: terraform validate
-        working-directory: ./  # Path to your Terraform configuration (adjust if needed)
+        working-directory: ./  # Path to your Terraform configuration
 
-      - name: Terraform Destroy
-        run: terraform destroy
-        working-directory: ./  # Path to your Terraform configuration (adjust if needed)
+      - name: Terraform Plan (Destroy)
+        run: terraform plan -destroy -out=tfplan
+        working-directory: ./  # Path to your Terraform configuration
 
+      - name: Terraform Apply (Destroy)
+        run: terraform apply -auto-approve tfplan
+        working-directory: ./  # Path to your Terraform configuration
+
+      - name: Terraform Destroy (Final Step)
+        run: terraform destroy -auto-approve
+        working-directory: ./  # Path to your Terraform configuration
