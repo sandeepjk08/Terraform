@@ -37,18 +37,7 @@ jobs:
         run: terraform validate
         working-directory: ./  # Path to your Terraform configuration (adjust if needed)
 
-      - name: Terraform Plan (Destroy)
-        run: terraform plan -destroy -out=tfplan
+      - name: Terraform Destroy
+        run: terraform apply -auto-approve -destroy
         working-directory: ./  # Path to your Terraform configuration (adjust if needed)
 
-      - name: Terraform Show Plan for Debugging
-        run: terraform show -json tfplan
-        working-directory: ./  # Path to your Terraform configuration (adjust if needed)
-
-      - name: Terraform Apply (Destroy)
-        run: terraform apply -auto-approve tfplan
-        working-directory: ./  # Path to your Terraform configuration (adjust if needed)
-
-      - name: Terraform Show After Apply for Debugging
-        run: terraform show
-        working-directory: ./  # Path to your Terraform configuration (adjust if needed)
