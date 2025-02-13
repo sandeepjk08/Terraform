@@ -41,6 +41,10 @@ jobs:
         run: terraform plan -destroy -out=tfplan
         working-directory: ./  # Path to your Terraform configuration (adjust if needed)
 
-      - name: Terraform Destroy
-        run: terraform apply -auto-approve -destroy
+      - name: Terraform Apply (Destroy)
+        run: terraform destroy -auto-approve
+        working-directory: ./  # Path to your Terraform configuration (adjust if needed)
+
+      - name: Terraform Destroy (Final Step)
+        run: terraform destroy -auto-approve
         working-directory: ./  # Path to your Terraform configuration (adjust if needed)
